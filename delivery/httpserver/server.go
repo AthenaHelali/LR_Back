@@ -10,6 +10,7 @@ import (
 	"game-app/service/backofficeuserservice"
 	"game-app/service/user"
 	"game-app/validator/uservalidator"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -31,6 +32,7 @@ func New(config config.Config, authSvc authservice.Service, userSvc user.Service
 func (s Server) Serve() {
 	e := echo.New()
 
+	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
