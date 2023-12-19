@@ -8,6 +8,9 @@ type repository interface {
 	RegisterUser(user entity.User) (entity.User, error)
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
 	GetUserByID(UserID uint) (entity.User, error)
+	AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop, error)
+	GetLaptops(UserID uint) ([]entity.Laptop, error)
+	
 }
 type AuthGenerator interface {
 	CreateAccessToken(user entity.User) (string, error)

@@ -12,6 +12,13 @@ func (s Service) Profile(req param.ProfileRequest) (param.ProfileResponse, error
 	if err != nil {
 		return param.ProfileResponse{}, richerror.New(op).WithError(err).WithMeta(map[string]interface{}{"request": req})
 	}
-	return param.ProfileResponse{Name: user.Name}, err
+	userInfo := &param.UserInfo{
+		ID: user.ID,
+		PhoneNumber: user.PhoneNumber,
+		Name: user.Name,
+		CreatedAt: user.CreatedAt,
+	}
+
+	return param.ProfileResponse{Info: *userInfo}, err
 
 }

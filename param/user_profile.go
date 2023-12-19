@@ -4,5 +4,6 @@ type ProfileRequest struct {
 	UserID uint
 }
 type ProfileResponse struct {
-	Name string `json:"name"`
+	Info UserInfo `json:"Info"`
+
 }
