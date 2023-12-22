@@ -15,7 +15,7 @@ func (h Handler) SetBackOfficeUerRoutes(e *echo.Echo) {
 	userGroup.DELETE("/users/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
 		middleware.AccessCheck(h.authorizationSvc, entity.UserDeletePermission))
 
-	userGroup.GET("/laptops/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
+	userGroup.GET("/laptops/", h.listLaptops, middleware.Auth(h.authSvc, h.authConfig),
 		middleware.AccessCheck(h.authorizationSvc, entity.LaptopListPermission))
 
 	userGroup.DELETE("/laptops/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),

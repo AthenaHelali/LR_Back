@@ -1,20 +1,17 @@
 package backofficeuserservice
 
 import (
-	"game-app/entity"
 	"game-app/param"
+	"game-app/pkg/richerror"
 )
 
 func (s Service) ListAllUsers() (param.ListUsersResponse, error) {
-	//TODO - implement me
-	list := make([]entity.User, 0)
-	list = append(list, entity.User{
-		ID:          0,
-		PhoneNumber: "fake",
-		Name:        "fake",
-		Password:    "123",
-		Role:        entity.AdminRole,
-	})
+	const op = "backofficeuserservice.ListAllUsers"
 
-	return param.ListUsersResponse{Users: list}, nil
+	l, err := s.repo.ListAllUsers()
+	if err != nil {
+		return param.ListUsersResponse{}, richerror.New(op).WithError(err)
+	}
+	
+	return param.ListUsersResponse{Users: l}, nil
 }

@@ -6,6 +6,7 @@ import (
 	"game-app/delivery/httpserver"
 	"game-app/repository/migrator"
 	"game-app/repository/mysql"
+	mysqlbackofficeuser "game-app/repository/mysql/backofficeuser"
 	"game-app/repository/mysql/mysqlaccesscontrol"
 	"game-app/repository/mysql/mysqluser"
 	"game-app/service/authorizationservice"
@@ -80,10 +81,11 @@ func setupServices(cfg config.Config) (authservice.Service, user.Service, userva
 	aclMysql := mysqlaccesscontrol.New(MysqlRepo)
 	authorizationSvc := authorizationservice.New(aclMysql)
 
-	backofficeUserSvc := backofficeuserservice.New(MysqlRepo)
+	backofficeuserMysql := mysqlbackofficeuser.New(MysqlRepo)
+	backofficeUserSvc := backofficeuserservice.New(backofficeuserMysql)
 
 	uV := uservalidator.New(userMysql)
 
-	return authSvc, *userSvc, uV, backofficeUserSvc, authorizationSvc
+	return authSvc, *userSvc, uV, *backofficeUserSvc, authorizationSvc
 
 }
