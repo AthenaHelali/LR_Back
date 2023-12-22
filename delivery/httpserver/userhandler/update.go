@@ -2,19 +2,23 @@ package userhandler
 
 import (
 	"game-app/param"
+	"game-app/pkg/claim"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func(h Handler)updateUser(c echo.Context) error{
+func (h Handler) updateUser(c echo.Context) error {
 	var req param.UpdateUserRequest
+
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "cant bind request")
 	}
-	userId,_ := strconv.Atoi(c.Param("user_id"))
-	req.ID = uint(userId)
+
+	cl := claim.GetClaimFromEchoContext(c)
+	req.ID = cl.UserID
+
+
 	res, err := h.userSvc.UpdateUser(req)
 
 	if err != nil {
@@ -22,7 +26,5 @@ func(h Handler)updateUser(c echo.Context) error{
 	}
 
 	return c.JSON(http.StatusOK, res)
-	
-
 
 }

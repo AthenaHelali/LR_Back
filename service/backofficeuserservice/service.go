@@ -1,24 +1,21 @@
 package backofficeuserservice
 
-import (
-	"game-app/entity"
-)
+
+
+type repository interface {
+	// ListAllUsers() ([]entity.User, error)
+	// DeleteUser(UserID uint)(error)
+	// ListAllLaptops() ([]entity.Laptop, error)
+	// DeleteLaptop(LaptopID uint)(error)
+	// UpdateLaptop(updatedLaptop entity.Laptop) (error)
+	
+}
 
 type Service struct {
+	repo repository
 }
 
-func New() Service {
-	return Service{}
+func New(repo repository) Service {
+	return Service{repo: repo}
 }
-func (s Service) ListAllUsers() ([]entity.User, error) {
-	//TODO - implement me
-	list := make([]entity.User, 0)
-	list = append(list, entity.User{
-		ID:          0,
-		PhoneNumber: "fake",
-		Name:        "fake",
-		Password:    "123",
-		Role:        entity.AdminRole,
-	})
-	return list, nil
-}
+

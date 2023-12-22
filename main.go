@@ -80,7 +80,7 @@ func setupServices(cfg config.Config) (authservice.Service, user.Service, userva
 	aclMysql := mysqlaccesscontrol.New(MysqlRepo)
 	authorizationSvc := authorizationservice.New(aclMysql)
 
-	backofficeUserSvc := backofficeuserservice.New()
+	backofficeUserSvc := backofficeuserservice.New(MysqlRepo)
 
 	uV := uservalidator.New(userMysql)
 

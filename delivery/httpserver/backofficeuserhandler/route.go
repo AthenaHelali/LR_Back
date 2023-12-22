@@ -7,9 +7,25 @@ import (
 )
 
 func (h Handler) SetBackOfficeUerRoutes(e *echo.Echo) {
-	userGroup := e.Group("/backoffice/users")
+	userGroup := e.Group("/backoffice")
 
-	userGroup.GET("/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
+	userGroup.GET("/users/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
 		middleware.AccessCheck(h.authorizationSvc, entity.UserListPermission))
+
+	userGroup.DELETE("/users/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
+		middleware.AccessCheck(h.authorizationSvc, entity.UserDeletePermission))
+
+	userGroup.GET("/laptops/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
+		middleware.AccessCheck(h.authorizationSvc, entity.LaptopListPermission))
+
+	userGroup.DELETE("/laptops/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
+		middleware.AccessCheck(h.authorizationSvc, entity.UserListPermission))
+
+	userGroup.PUT("/laptops/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
+		middleware.AccessCheck(h.authorizationSvc, entity.UserListPermission))
+
+	
+
+	
 
 }
