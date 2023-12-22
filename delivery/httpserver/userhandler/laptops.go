@@ -18,7 +18,7 @@ func (h Handler) addFavorite(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "cant bind request")
 	}
-
+	
 
 	response, err := h.userSvc.AddFavoriteLaptop(req)
 
@@ -47,6 +47,23 @@ func (h Handler) getLaptops(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 
 }
+
+func (h Handler) getLaptop(c echo.Context) error {
+	var req param.LaptopRequest
+
+	laptopID := c.Param("laptop_id")
+
+	req.LaptopID,_ = strconv.Atoi(laptopID)
+
+	response, err := h.userSvc.GetLaptop(req)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, response)
+
+}
 func (h Handler) search(c echo.Context) error {
 	var req param.SearchRequest
 
@@ -63,3 +80,4 @@ func (h Handler) search(c echo.Context) error {
 
 
 }
+

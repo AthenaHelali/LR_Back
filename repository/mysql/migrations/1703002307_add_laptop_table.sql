@@ -6,9 +6,10 @@ CREATE TABLE `laptops` (
                        `ram` INT NOT NULL ,
                        `ssd` INT NOT NULL,
                        `hdd` INT NOT NULL,
-                       `grapic_card` VARCHAR(255) NOT NULL,
+                       `graphic` INT NOT NULL,
                        `screen_size` VARCHAR(255) NOT NULL,
                        `company` VARCHAR(255) NOT NULL,
+                       `price`  VARCHAR(255) NOT NULL,
                        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                        `image_url` VARCHAR(255),
                        `redirect_url` VARCHAR(255)

@@ -1,45 +1,64 @@
 package param
+
 import (
 	"time"
 )
 
-type LaptopInfo struct{
-	ID uint `json:"id"`
-	CPU  string `json:"cpu"`
-	RAM int64`json:"ram"`
-	SSD int64 `json:"ssd"`
-	HDD int64 `json:"hdd"`
-	GraphicCard string `json:"graphic_card"`
+type LaptopInfo struct {
+	ID          uint      `json:"id"`
+	CPU         string    `json:"cpu"`
+	RAM         int64     `json:"ram"`
+	SSD         int64     `json:"ssd"`
+	HDD         int64     `json:"hdd"`
+	Graphic     int64     `json:"graphic"`
+	ScreenSize  string    `json:"screen_size"`
+	Company     string    `json:"company"`
+	Price       string    `json:"price"`
+	CreatedAt   time.Time `json:"created_at"`
+	ImageURL    string    `json:"image_url"`
+	RedirectURL string    `json:"redirect_url"`
+}
+type SearchInfo struct {
+	CPU        string `json:"cpu"`
+	RAM        int64  `json:"ram"`
+	SSD        int64  `json:"ssd"`
+	HDD        int64  `json:"hdd"`
+	Graphic    int64  `json:"graphic"`
 	ScreenSize string `json:"screen_size"`
-	Company string `json:"company"`
-	CreatedAt time.Time `json:"created_at"`
-	ImageURL string `json:"image_url"`
-	RedirectURL string `json:"redirect_url"`
+	Company    string `json:"company"`
 }
 
 type AddLaptopRequest struct {
-	UserID int `json:"user_id"`
+	UserID int        `json:"user_id"`
 	Laptop LaptopInfo `json:"laptop"`
 }
 
 type AddLaptopResponse struct {
-	ID int `json:"id"`
+	ID      int  `json:"id"`
 	Success bool `json:"success"`
 }
 
-type LaptopsRequest struct{
+type LaptopsRequest struct {
 	UserID int `json:"user_id"`
 }
 
-type LaptopsResponse struct{
+type LaptopsResponse struct {
 	Laptops []LaptopInfo `json:"laptops"`
 }
 
-type SearchRequest struct{
-	UserID int `json:"id"`
-	Info LaptopInfo `json:"laptop"`
+type LaptopRequest struct {
+	LaptopID int `json:"laptop_id"`
 }
 
-type SearchResponse struct{
+type LaptopResponse struct {
+	Laptop LaptopInfo `json:"laptop"`
+}
+
+type SearchRequest struct {
+	UserID int        `json:"id"`
+	Info   SearchInfo `json:"laptop"`
+}
+
+type SearchResponse struct {
 	Laptops []LaptopInfo `json:"laptop"`
 }

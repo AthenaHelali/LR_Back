@@ -1,18 +1,20 @@
 package entity
-import(
+
+import (
 	"time"
 )
 
-type Laptop struct{
-	ID uint
-	CPU  string
-	RAM int64
-	SSD int64
-	HDD int64
-	GraphicCard string
-	ScreenSize string
-	Company string
-	CreatedAt time.Time
-	ImageURL string
+type Laptop struct {
+	ID          uint
+	CPU         string
+	RAM         int64
+	SSD         int64
+	HDD         int64
+	Graphic     int64
+	ScreenSize  string
+	Company     string
+	Price       string
+	CreatedAt   time.Time
+	ImageURL    string
 	RedirectURL string
 }

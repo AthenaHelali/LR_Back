@@ -15,7 +15,10 @@ func (s Service) AddFavoriteLaptop(req param.AddLaptopRequest) (param.AddLaptopR
 		RAM:         req.Laptop.RAM,
 		SSD:         req.Laptop.SSD,
 		HDD:         req.Laptop.HDD,
-		GraphicCard: req.Laptop.GraphicCard,
+		Graphic:     req.Laptop.Graphic,
+		ScreenSize:  req.Laptop.ScreenSize,
+		Company:     req.Laptop.Company,
+		Price:       req.Laptop.Price,
 		ImageURL:    req.Laptop.ImageURL,
 		RedirectURL: req.Laptop.RedirectURL,
 	}
@@ -46,7 +49,8 @@ func (s Service) GetLaptops(req param.LaptopsRequest) (param.LaptopsResponse, er
 			HDD:         l.HDD,
 			ScreenSize:  l.ScreenSize,
 			Company:     l.Company,
-			GraphicCard: l.GraphicCard,
+			Graphic:     l.Graphic,
+			Price: l.Price,
 			CreatedAt:   l.CreatedAt,
 			ImageURL:    l.ImageURL,
 			RedirectURL: l.RedirectURL,
@@ -57,8 +61,31 @@ func (s Service) GetLaptops(req param.LaptopsRequest) (param.LaptopsResponse, er
 	return param.LaptopsResponse{Laptops: laptopsInfo}, nil
 }
 
+func (s Service) GetLaptop(req param.LaptopRequest) (param.LaptopResponse, error) {
+	laptop, err := s.repo.GetLaptopByID(uint(req.LaptopID))
+	if err != nil {
+		return param.LaptopResponse{}, fmt.Errorf("unexpected error: %w", err)
+	}
+
+	laptopsInfo := &param.LaptopInfo{
+		ID:          laptop.ID,
+		CPU:         laptop.CPU,
+		RAM:         laptop.RAM,
+		SSD:         laptop.SSD,
+		HDD:         laptop.HDD,
+		ScreenSize:  laptop.ScreenSize,
+		Company:     laptop.Company,
+		Graphic:     laptop.Graphic,
+		CreatedAt:   laptop.CreatedAt,
+		ImageURL:    laptop.ImageURL,
+		RedirectURL: laptop.RedirectURL,
+	}
+
+	return param.LaptopResponse{Laptop: *laptopsInfo}, nil
+}
+
 func (s Service) Search(req param.SearchRequest) (param.SearchResponse, error) {
-	// TODO - get laptops from ml component 
+	// TODO - get laptops from ml component
 	var laptops []param.LaptopInfo
 	laptops = append(laptops,
 		param.LaptopInfo{
@@ -69,7 +96,7 @@ func (s Service) Search(req param.SearchRequest) (param.SearchResponse, error) {
 			HDD:         512,
 			ScreenSize:  "13",
 			Company:     "hp",
-			GraphicCard: "gforce",
+			Graphic:     8,
 			ImageURL:    "sdfghjkl.jpg",
 			RedirectURL: "goole.com",
 		},
@@ -81,11 +108,11 @@ func (s Service) Search(req param.SearchRequest) (param.SearchResponse, error) {
 			HDD:         512,
 			ScreenSize:  "14",
 			Company:     "lenovo",
-			GraphicCard: "gforce",
+			Graphic:     2,
 			ImageURL:    "sdfghjkl.jpg",
 			RedirectURL: "goole.com",
 		})
 
-		return param.SearchResponse{Laptops: laptops}, nil
+	return param.SearchResponse{Laptops: laptops}, nil
 
 }
