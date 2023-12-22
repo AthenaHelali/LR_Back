@@ -10,6 +10,8 @@ type repository interface {
 	GetUserByID(UserID uint) (entity.User, error)
 	AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop, error)
 	GetLaptops(UserID uint) ([]entity.Laptop, error)
+	GetLaptopByID(LaptopID uint) (entity.Laptop, error)
+	UpdateUser(updatedUser entity.User) (error)
 	
 }
 type AuthGenerator interface {

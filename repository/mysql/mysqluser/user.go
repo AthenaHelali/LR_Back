@@ -82,7 +82,9 @@ func scanUser(scanner mysql.Scanner) (entity.User, error) {
 func (d *DB) AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop, error) {
 	const op = "mysql.AddFavoriteLaptop"
 
-	res, err := d.conn.Connection().Exec(`insert into laptops(cpu, ram,ssd, hdd, grapic_card, screen_size, company, image_url, redirect_url ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`, laptop.CPU, laptop.RAM, laptop.SSD, laptop.HDD, laptop.GraphicCard, laptop.ScreenSize, laptop.Company, laptop.ImageURL, laptop.RedirectURL)
+
+//after merging databases, laptop already exists in database and just execute second query
+	res, err := d.conn.Connection().Exec(`insert into laptops(cpu, ram,ssd, hdd, graphic, screen_size, company, price, image_url, redirect_url ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, laptop.CPU, laptop.RAM, laptop.SSD, laptop.HDD, laptop.Graphic, laptop.ScreenSize, laptop.Company,laptop.Price, laptop.ImageURL, laptop.RedirectURL)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
@@ -105,13 +107,13 @@ func (d *DB) AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop,
 func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 	const op = "mysql.GetLaptops"
 	var laptops []entity.Laptop
-	rows, err := d.conn.Connection().Query(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.grapic_card,laptops.screen_size, laptops.company, laptops.image_url, laptops.redirect_url from laptops join user_laptop on laptops.id = user_laptop.laptop_ref where user_laptop.user_ref = ?`, UserID)
+	rows, err := d.conn.Connection().Query(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops join user_laptop on laptops.id = user_laptop.laptop_ref where user_laptop.user_ref = ?`, UserID)
 	if err != nil {
 		return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 	}
 	for rows.Next() {
 		var laptop entity.Laptop
-		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.GraphicCard, &laptop.ScreenSize, &laptop.Company, &laptop.ImageURL, &laptop.RedirectURL)
+		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company,&laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
 		if err != nil {
 			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 		}
@@ -133,3 +135,55 @@ func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 	}
 	return laptops, nil
 }
+
+func (d *DB) GetLaptopByID(LaoptopID uint) (entity.Laptop, error) {
+	const op = "mysql.GetLaptops"
+	row := d.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where laptop.ID = ?`, LaoptopID)
+	if err := row.Err(); err!= nil {
+		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+	}
+	
+	var laptop entity.Laptop
+	err := row.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company,&laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+	if err != nil {
+		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+	}
+
+	return laptop, nil
+}
+
+func (db *DB)UpdateUser(updatedUser entity.User) error {
+
+	// Create an update query based on non-empty fields
+	updateQuery := "UPDATE users SET"
+	updateValues := []interface{}{}
+
+
+	if updatedUser.Name != "" {
+		updateQuery += " name = ?,"
+		updateValues = append(updateValues, updatedUser.Name)
+	}
+
+	if updatedUser.Password != "" {
+		updateQuery += " password = ?,"
+		updateValues = append(updateValues, updatedUser.Password)
+	}
+
+	if updatedUser.PhoneNumber != "" {
+		updateQuery += " phone_number = ?,"
+		updateValues = append(updateValues, updatedUser.PhoneNumber)
+	}
+
+	// Remove the trailing comma
+	updateQuery = updateQuery[:len(updateQuery)-1]
+
+	updateQuery += " WHERE id = ?"
+	updateValues = append(updateValues, updatedUser.ID)
+
+	fmt.Print(updateQuery)
+
+	// Execute the update query
+	_, err := db.conn.Connection().Exec(updateQuery, updateValues...)
+	return err
+}
+
