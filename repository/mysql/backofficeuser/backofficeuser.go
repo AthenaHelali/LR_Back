@@ -39,10 +39,6 @@ func (d *DB) ListAllUsers() ([]entity.User, error) {
 
 }
 
-func (d *DB) DeleteUser(UserID uint) error {
-	panic("")
-
-}
 func (d *DB) ListAllLaptops() ([]entity.Laptop, error) {
 	const op = "mysql.ListAllUsers"
 	rows, err := d.conn.Connection().Query(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops`)
@@ -73,11 +69,11 @@ func (d *DB) ListAllLaptops() ([]entity.Laptop, error) {
 	return laptops, nil
 }
 
-func (d *DB) DeleteLaptop(LaptopID uint) error {
+func (d *DB) DeleteLaptop(LaptopID uint64)( error) {
 	const op = "DeleteLaptop"
 	deleteQuery := "DELETE FROM laptops WHERE id = ?"
 	// Execute the delete query
-	_, err := d.conn.Connection().Exec(deleteQuery, LaptopID)
+	_,err := d.conn.Connection().Exec(deleteQuery, LaptopID)
 	if err != nil {
 		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 	}

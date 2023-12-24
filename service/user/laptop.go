@@ -116,3 +116,14 @@ func (s Service) Search(req param.SearchRequest) (param.SearchResponse, error) {
 	return param.SearchResponse{Laptops: laptops}, nil
 
 }
+
+func (s Service) RemoveFavoriteLaptop(req param.LaptopRequest) (error) {
+
+	err := s.repo.RemoveFavoriteLaptop(req.LaptopID)
+	if err != nil {
+		return fmt.Errorf("unexpected error: %w", err)
+	}
+
+	return nil
+}
+

@@ -20,6 +20,8 @@ func (h Handler) SetUerRoutes(e *echo.Echo) {
 	
 	userGroup.GET("/laptops/favorites",h.getLaptops,middleware.Auth(h.authSvc, h.authConfig))
 
+	userGroup.DELETE("/laptops/favorites",h.getLaptops,middleware.Auth(h.authSvc, h.authConfig))
+
 	userGroup.POST("/laptops/search",h.search,middleware.Auth(h.authSvc, h.authConfig))
 
 	userGroup.GET("/laptop",h.getLaptop)

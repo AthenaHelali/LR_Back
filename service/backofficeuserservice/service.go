@@ -6,11 +6,8 @@ import "game-app/entity"
 
 type repository interface {
 	ListAllUsers() ([]entity.User, error)
-	DeleteUser(UserID uint)(error)
 	ListAllLaptops() ([]entity.Laptop, error)
-	DeleteLaptop(LaptopID uint)(error)
-	UpdateLaptop(laptopID uint,updatedLaptop entity.Laptop) (error)
-	
+	DeleteLaptop(LaptopID uint64)(error)	
 }
 
 type Service struct {

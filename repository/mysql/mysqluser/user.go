@@ -104,6 +104,19 @@ func (d *DB) AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop,
 	return laptop, nil
 }
 
+func (d *DB)RemoveFavoriteLaptop(LaptopID int)error{
+	const op = "mysql.DeleteLaptop"
+	deleteQuery := "DELETE FROM user_laptop WHERE laptop_ref = ? and user_ref = "
+	// Execute the delete query
+	_, err := d.conn.Connection().Exec(deleteQuery, LaptopID)
+	if err != nil {
+		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+	}
+
+	return nil
+
+}
+
 func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 	const op = "mysql.GetLaptops"
 	var laptops []entity.Laptop
@@ -155,6 +168,9 @@ func (d *DB) GetLaptopByID(LaoptopID uint) (entity.Laptop, error) {
 func (db *DB)UpdateUser(updatedUser entity.User) error {
 
 	// Create an update query based on non-empty fields
+	fmt.Println(updatedUser.Name)
+	fmt.Println(updatedUser.Password)
+	fmt.Println(updatedUser.Name)
 	updateQuery := "UPDATE users SET"
 	updateValues := []interface{}{}
 

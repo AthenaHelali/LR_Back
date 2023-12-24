@@ -9,20 +9,23 @@ import (
 )
 
 func (s Service) UpdateUser(req param.UpdateUserRequest) (param.UpdateUserResponse, error) {
-	pass := []byte(req.Password)
-	hashedPass, err := bcrypt.GenerateFromPassword(pass, bcrypt.DefaultCost)
-	
-	if err != nil {
-		return param.UpdateUserResponse{},fmt.Errorf("unexpected error: %w", err)
+	if req.Password != ""{
+		pass := []byte(req.Password)
+		hashedPass, err := bcrypt.GenerateFromPassword(pass, bcrypt.DefaultCost)
+		if err != nil {
+			return param.UpdateUserResponse{},fmt.Errorf("unexpected error: %w", err)
+		}
+		req.Password = string(hashedPass)
+		
 	}
-
+	
 	user := &entity.User{
 		ID: req.ID,
 		PhoneNumber: req.PhoneNumber,
 		Name: req.Name,
-		Password: string(hashedPass),
+		Password: req.Password,
 	}
-	err = s.repo.UpdateUser(*user)
+	err := s.repo.UpdateUser(*user)
 	if err != nil {
 		return param.UpdateUserResponse{},fmt.Errorf("unexpected error: %w", err)
 	}

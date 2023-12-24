@@ -28,6 +28,26 @@ func (h Handler) addFavorite(c echo.Context) error {
 
 }
 
+// func (h Handler) removeFavorite(c echo.Context) error {
+// 	var req param.LaptopRequest
+// 	cl := claim.GetClaimFromEchoContext(c)
+
+// 	req. = int(cl.UserID)
+
+// 	if err := c.Bind(&req); err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, "cant bind request")
+// 	}
+
+// 	response, err := h.userSvc.AddFavoriteLaptop(req)
+
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+// 	}
+
+// 	return c.JSON(http.StatusOK, response)
+
+// }
+
 func (h Handler) getLaptops(c echo.Context) error {
 	var req param.LaptopsRequest
 
