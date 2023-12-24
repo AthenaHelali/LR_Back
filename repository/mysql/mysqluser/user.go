@@ -104,11 +104,11 @@ func (d *DB) AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop,
 	return laptop, nil
 }
 
-func (d *DB)RemoveFavoriteLaptop(LaptopID int)error{
+func (d *DB)RemoveFavoriteLaptop(LaptopID int, UserID int)error{
 	const op = "mysql.DeleteLaptop"
-	deleteQuery := "DELETE FROM user_laptop WHERE laptop_ref = ? and user_ref = "
+	deleteQuery := "DELETE FROM user_laptop WHERE laptop_ref = ? and user_ref = ? "
 	// Execute the delete query
-	_, err := d.conn.Connection().Exec(deleteQuery, LaptopID)
+	_, err := d.conn.Connection().Exec(deleteQuery, LaptopID, UserID)
 	if err != nil {
 		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 	}

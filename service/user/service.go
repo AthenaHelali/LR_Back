@@ -9,7 +9,7 @@ type repository interface {
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
 	GetUserByID(UserID uint) (entity.User, error)
 	AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop, error)
-	RemoveFavoriteLaptop(laptopID int) (error)
+	RemoveFavoriteLaptop(LaptopID int, UserID int)error
 	GetLaptops(UserID uint) ([]entity.Laptop, error)
 	GetLaptopByID(LaptopID uint) (entity.Laptop, error)
 	UpdateUser(updatedUser entity.User) (error)
