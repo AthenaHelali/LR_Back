@@ -8,6 +8,7 @@ type repository interface {
 	ListAllUsers() ([]entity.User, error)
 	ListAllLaptops() ([]entity.Laptop, error)
 	DeleteLaptop(LaptopID uint64)(error)	
+	RegisterAdmin()error
 }
 
 type Service struct {
@@ -18,3 +19,6 @@ func New(repo repository) *Service {
 	return &Service{repo: repo}
 }
 
+func(s Service)RegisterAdmin()error{
+	return s.repo.RegisterAdmin()
+}

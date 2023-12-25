@@ -5,6 +5,8 @@ import (
 	"game-app/pkg/errormessage"
 	"game-app/pkg/richerror"
 	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (d *DB) ListAllUsers() ([]entity.User, error) {
@@ -149,6 +151,21 @@ func (d *DB) UpdateLaptop(laptopID uint, updatedLaptop entity.Laptop) error {
 	// Execute the update query
 	_, err := d.conn.Connection().Exec(updateQuery, updateValues...)
 	return err
+}
+
+func (d *DB) RegisterAdmin() error {
+	const op = "backofficeuser.RegisterAdmin"
+	pass := []byte("admin12345")
+	hashedPass, err := bcrypt.GenerateFromPassword(pass, bcrypt.DefaultCost)
+	if err != nil{
+		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+		}
+
+	_, err = d.conn.Connection().Exec(`insert into users(name, phone_number, password, role) values (?, ? , ?, ?)`,"admin" ,"09111111111" ,hashedPass, entity.AdminRoleStr )
+	if err != nil{
+	return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+	}
+	return nil
 }
 
 
