@@ -12,7 +12,7 @@ CREATE TABLE `laptops` (
                        `price`  VARCHAR(255) NOT NULL,
                        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                        `image_url` VARCHAR(255),
-                       `redirect_url` VARCHAR(255)
+                       `redirect_url` VARCHAR(1024)
                        
 );
 
