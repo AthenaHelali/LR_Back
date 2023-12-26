@@ -12,7 +12,6 @@ import (
 	"game-app/service/authorizationservice"
 	"game-app/service/authservice"
 	"game-app/service/backofficeuserservice"
-	"game-app/service/search"
 	"game-app/service/user"
 	"game-app/validator/uservalidator"
 	"os"
@@ -54,7 +53,7 @@ func main() {
 			Username: "gameapp",
 			Password: "gameappt0lk2o20",
 			Port:     3308,
-			Host:     "5.34.200.127",
+			Host:     "localhost",
 			DBName:   "gameapp_db",
 		},
 	}
@@ -77,9 +76,7 @@ func setupServices(cfg config.Config) (authservice.Service, user.Service, userva
 
 	userMysql := mysqluser.New(MysqlRepo)
 
-	searchSvc := search.New("http://localhost:8000/recommendation")
-
-	userSvc := user.New(authSvc, userMysql, searchSvc)
+	userSvc := user.New(authSvc, userMysql)
 
 	aclMysql := mysqlaccesscontrol.New(MysqlRepo)
 	authorizationSvc := authorizationservice.New(aclMysql)
