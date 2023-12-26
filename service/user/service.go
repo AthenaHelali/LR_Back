@@ -2,17 +2,19 @@ package user
 
 import (
 	"game-app/entity"
+	"game-app/param"
 )
 
 type repository interface {
 	RegisterUser(user entity.User) (entity.User, error)
 	GetUserByPhoneNumber(phoneNumber string) (entity.User, error)
 	GetUserByID(UserID uint) (entity.User, error)
-	AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop, error)
+	AddFavoriteLaptop(userID int,laptopID int) (error)
+	RemoveFavoriteLaptop(LaptopID int, UserID int)error
 	GetLaptops(UserID uint) ([]entity.Laptop, error)
 	GetLaptopByID(LaptopID uint) (entity.Laptop, error)
 	UpdateUser(updatedUser entity.User) (error)
-	
+	Search() ([]param.LaptopInfo, error)
 }
 type AuthGenerator interface {
 	CreateAccessToken(user entity.User) (string, error)

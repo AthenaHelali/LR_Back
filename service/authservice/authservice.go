@@ -1,7 +1,6 @@
 package authservice
 
 import (
-	"fmt"
 	"game-app/entity"
 	"github.com/golang-jwt/jwt/v5"
 	"strings"
@@ -40,7 +39,6 @@ func (s Service) ParseToken(bearerToken string) (*Claims, error) {
 	})
 
 	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
-		fmt.Printf("userID: %v,ExpiresAt: %v\n ", claims.UserID, claims.RegisteredClaims.ExpiresAt)
 		return claims, nil
 	} else {
 		return nil, err

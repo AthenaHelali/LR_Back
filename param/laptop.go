@@ -29,12 +29,11 @@ type SearchInfo struct {
 }
 
 type AddLaptopRequest struct {
-	UserID int        `json:"user_id"`
-	Laptop LaptopInfo `json:"laptop"`
+	UserID   int `json:"user_id"`
+	LaptopID int `json:"laptop_id"`
 }
 
 type AddLaptopResponse struct {
-	ID      int  `json:"id"`
 	Success bool `json:"success"`
 }
 
@@ -61,4 +60,13 @@ type SearchRequest struct {
 
 type SearchResponse struct {
 	Laptops []LaptopInfo `json:"laptop"`
+}
+
+type RemoveFavoriteLaptopRequest struct {
+	UserID   int `json:"user_id"`
+	LaptopID int `json:"laptop_id"`
+}
+
+type RemoveFavoriteLaptopResponse struct {
+	Success bool `json:"success"`
 }

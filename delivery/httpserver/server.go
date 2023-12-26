@@ -29,7 +29,7 @@ func New(config config.Config, authSvc authservice.Service, userSvc user.Service
 	}
 }
 
-func (s Server) Serve() {
+func (s Server) Serve() { 
 	e := echo.New()
 
 	e.Use(middleware.CORS())

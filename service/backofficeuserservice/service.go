@@ -6,11 +6,9 @@ import "game-app/entity"
 
 type repository interface {
 	ListAllUsers() ([]entity.User, error)
-	DeleteUser(UserID uint)(error)
 	ListAllLaptops() ([]entity.Laptop, error)
-	DeleteLaptop(LaptopID uint)(error)
-	UpdateLaptop(laptopID uint,updatedLaptop entity.Laptop) (error)
-	
+	DeleteLaptop(LaptopID uint64)(error)	
+	RegisterAdmin()error
 }
 
 type Service struct {
@@ -21,3 +19,6 @@ func New(repo repository) *Service {
 	return &Service{repo: repo}
 }
 
+func(s Service)RegisterAdmin()error{
+	return s.repo.RegisterAdmin()
+}

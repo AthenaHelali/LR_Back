@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"game-app/entity"
+	"game-app/param"
 	"game-app/pkg/errormessage"
 	"game-app/pkg/richerror"
 	"game-app/repository/mysql"
@@ -79,29 +80,28 @@ func scanUser(scanner mysql.Scanner) (entity.User, error) {
 
 }
 
-func (d *DB) AddFavoriteLaptop(laptop entity.Laptop, userID int) (entity.Laptop, error) {
+func (d *DB) AddFavoriteLaptop(userID int, laptopID int) (error) {
 	const op = "mysql.AddFavoriteLaptop"
 
-
-//after merging databases, laptop already exists in database and just execute second query
-	res, err := d.conn.Connection().Exec(`insert into laptops(cpu, ram,ssd, hdd, graphic, screen_size, company, price, image_url, redirect_url ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, laptop.CPU, laptop.RAM, laptop.SSD, laptop.HDD, laptop.Graphic, laptop.ScreenSize, laptop.Company,laptop.Price, laptop.ImageURL, laptop.RedirectURL)
+	_, err := d.conn.Connection().Exec(`insert into user_laptop(user_ref, laptop_ref) values (?, ?)`, userID, laptopID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
-
-		}
-		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+		return fmt.Errorf("can't execute command: %W", err)
 	}
 
-	id, _ := res.LastInsertId()
-	laptop.ID = uint(id)
+	return nil
+}
 
-	_, err = d.conn.Connection().Exec(`insert into user_laptop(user_ref, laptop_ref) values (?, ?)`, userID, laptop.ID)
+func (d *DB) RemoveFavoriteLaptop(LaptopID int, UserID int) error {
+	const op = "mysql.DeleteLaptop"
+	deleteQuery := "DELETE FROM user_laptop WHERE laptop_ref = ? and user_ref = ? "
+	// Execute the delete query
+	_, err := d.conn.Connection().Exec(deleteQuery, LaptopID, UserID)
 	if err != nil {
-		return entity.Laptop{}, fmt.Errorf("can't execute command: %W", err)
+		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 	}
 
-	return laptop, nil
+	return nil
+
 }
 
 func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
@@ -113,7 +113,7 @@ func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 	}
 	for rows.Next() {
 		var laptop entity.Laptop
-		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company,&laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
 		if err != nil {
 			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 		}
@@ -139,12 +139,12 @@ func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 func (d *DB) GetLaptopByID(LaoptopID uint) (entity.Laptop, error) {
 	const op = "mysql.GetLaptops"
 	row := d.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where laptop.ID = ?`, LaoptopID)
-	if err := row.Err(); err!= nil {
+	if err := row.Err(); err != nil {
 		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 	}
-	
+
 	var laptop entity.Laptop
-	err := row.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company,&laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+	err := row.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
 	if err != nil {
 		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 	}
@@ -152,12 +152,14 @@ func (d *DB) GetLaptopByID(LaoptopID uint) (entity.Laptop, error) {
 	return laptop, nil
 }
 
-func (db *DB)UpdateUser(updatedUser entity.User) error {
+func (db *DB) UpdateUser(updatedUser entity.User) error {
 
 	// Create an update query based on non-empty fields
+	fmt.Println(updatedUser.Name)
+	fmt.Println(updatedUser.Password)
+	fmt.Println(updatedUser.Name)
 	updateQuery := "UPDATE users SET"
 	updateValues := []interface{}{}
-
 
 	if updatedUser.Name != "" {
 		updateQuery += " name = ?,"
@@ -187,3 +189,26 @@ func (db *DB)UpdateUser(updatedUser entity.User) error {
 	return err
 }
 
+func (db *DB) Search() ([]param.LaptopInfo, error) {
+	const op = "mysql.Search"
+	rows, err := db.conn.Connection().Query(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops`)
+	if err != nil {
+		return nil,richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+
+	}
+	defer rows.Close()
+
+	var laptops []param.LaptopInfo
+
+	// Iterate over the result set and populate the users slice
+	for rows.Next() {
+		var laptop param.LaptopInfo
+		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+		if err != nil {
+			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+
+		}
+		laptops = append(laptops, laptop)
+	}
+	return laptops, nil
+}
