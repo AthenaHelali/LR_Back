@@ -54,11 +54,25 @@ func (d *DB) ListAllLaptops() ([]entity.Laptop, error) {
 
 	// Iterate over the result set and populate the users slice
 	for rows.Next() {
+		var imageUrlTmp *string = new(string)
+		var redirectUrlTmp *string = new(string)
+
 		var laptop entity.Laptop
-		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &imageUrlTmp, &redirectUrlTmp)
 		if err != nil {
+			println(err.Error())
 			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 
+		}
+		if imageUrlTmp == nil {
+			laptop.ImageURL = ""
+		} else {
+			laptop.ImageURL = *imageUrlTmp
+		}
+		if redirectUrlTmp == nil {
+			laptop.RedirectURL = ""
+		} else {
+			laptop.RedirectURL = *redirectUrlTmp
 		}
 		laptops = append(laptops, laptop)
 	}
@@ -75,12 +89,12 @@ func (d *DB) DeleteLaptop(LaptopID uint64) error {
 	const op = "DeleteLaptop"
 	// Execute the delete query
 
-	_, err := d.conn.Connection().Query(`DELETE FROM user_laptop WHERE laptop_ref = ?`,LaptopID)
+	_, err := d.conn.Connection().Query(`DELETE FROM user_laptop WHERE laptop_ref = ?`, LaptopID)
 	if err != nil {
 		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 	}
-	
-	_, err = d.conn.Connection().Query(`DELETE FROM laptops WHERE id = ?`,LaptopID)
+
+	_, err = d.conn.Connection().Query(`DELETE FROM laptops WHERE id = ?`, LaptopID)
 	if err != nil {
 		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 	}

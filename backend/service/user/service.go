@@ -14,18 +14,23 @@ type repository interface {
 	GetLaptops(UserID uint) ([]entity.Laptop, error)
 	GetLaptopByID(LaptopID uint) (entity.Laptop, error)
 	UpdateUser(updatedUser entity.User) (error)
-	Search() ([]param.LaptopInfo, error)
+	Search(IDs[]int) ([]param.LaptopInfo, error)
 }
 type AuthGenerator interface {
 	CreateAccessToken(user entity.User) (string, error)
 	CreateRefreshToken(user entity.User) (string, error)
 }
 
+type SearchService interface{
+	SearchRequest(inf param.SearchInfo) (param.SearchResponse, error)
+}
+
 type Service struct {
 	auth AuthGenerator
 	repo repository
+	search SearchService
 }
 
-func New(authGenerator AuthGenerator, repo repository) *Service {
-	return &Service{auth: authGenerator, repo: repo}
+func New(authGenerator AuthGenerator, repo repository, search SearchService) *Service {
+	return &Service{auth: authGenerator, repo: repo, search: search}
 }
