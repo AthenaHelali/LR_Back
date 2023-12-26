@@ -313,7 +313,7 @@ paths:
       tags:
       - users
   /users/laptops/search:
-    get:
+    post:
       consumes:
       - application/json
       description: Perform a search for laptops based on the provided criteria

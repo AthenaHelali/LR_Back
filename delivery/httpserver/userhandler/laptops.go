@@ -120,7 +120,7 @@ func (h Handler) getLaptop(c echo.Context) error {
 // @Param request body param.SearchRequest true "Search criteria for laptops"
 // @Success 200 {object} param.SearchResponse "Search results for laptops"
 // @Failure 400 {object} error "Bad Request"
-// @Router /users/laptops/search [get]
+// @Router /users/laptops/search [post]
 func (h Handler) search(c echo.Context) error {
 	var req param.SearchRequest
 

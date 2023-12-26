@@ -20,7 +20,6 @@ func (s Service) UpdateUser(req param.UpdateUserRequest) (param.UpdateUserRespon
 	}
 	
 	user := &entity.User{
-		ID: req.ID,
 		PhoneNumber: req.PhoneNumber,
 		Name: req.Name,
 		Password: req.Password,

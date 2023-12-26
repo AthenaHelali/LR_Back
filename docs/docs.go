@@ -294,7 +294,7 @@ const docTemplate = `{
             }
         },
         "/users/laptops/search": {
-            "get": {
+            "post": {
                 "description": "Perform a search for laptops based on the provided criteria",
                 "consumes": [
                     "application/json"
