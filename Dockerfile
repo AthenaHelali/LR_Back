@@ -15,7 +15,5 @@ COPY --from=build-stage /opt/app/lr-app /bin/lr-app
 
 EXPOSE 8080
 
-USER appuser:appuser
-
 ENTRYPOINT ["/bin/lr-app"]
 
