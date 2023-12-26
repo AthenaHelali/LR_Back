@@ -59,8 +59,7 @@ type SearchRequest struct {
 }
 
 type SearchResponse struct {
-	Success bool `json:"success"`
-	Result []int `json:"result"`
+	Laptops []LaptopInfo `json:"laptop"`
 }
 
 type RemoveFavoriteLaptopRequest struct {

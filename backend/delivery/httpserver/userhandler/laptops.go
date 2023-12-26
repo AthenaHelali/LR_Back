@@ -32,8 +32,8 @@ func (h Handler) addFavorite(c echo.Context) error {
 func (h Handler) removeFavorite(c echo.Context) error {
 	var req param.RemoveFavoriteLaptopRequest
 	cl := claim.GetClaimFromEchoContext(c)
-	laptop_Id, _ := strconv.Atoi(c.Param("laptop_id"))
-	req.LaptopID = laptop_Id
+	laptop_Id,_ := strconv.Atoi(c.Param("laptop_id"))
+	req.LaptopID =laptop_Id
 
 	req.UserID = int(cl.UserID)
 
@@ -89,9 +89,6 @@ func (h Handler) search(c echo.Context) error {
 
 	cl := claim.GetClaimFromEchoContext(c)
 	req.UserID = int(cl.UserID)
-	if err := c.Bind(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "cant bind request")
-	}
 
 	response, err := h.userSvc.Search(req)
 
