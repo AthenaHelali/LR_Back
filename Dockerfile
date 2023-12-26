@@ -3,7 +3,7 @@ FROM golang:1.19 AS build-stage
 
 WORKDIR /opt/app
 
-COPY backend/ ./
+COPY . .
 RUN go mod download
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o lr-app
