@@ -7,7 +7,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
-
+// @Summary Get user profile
+// @Description Retrieve the profile information of the authenticated user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer Token"
+// @Success 200 {object} param.ProfileResponse "User profile information"
+// @Failure 401 {object} error "Unauthorized"
+// @Router /users/profile [get]
 func (h Handler) userProfile(c echo.Context) error {
 
 	cl := claim.GetClaimFromEchoContext(c)

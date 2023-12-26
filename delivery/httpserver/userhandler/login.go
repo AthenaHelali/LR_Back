@@ -7,6 +7,16 @@ import (
 	"net/http"
 )
 
+// @Summary User login
+// @Description Login with the provided credentials
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body param.LoginRequest true "User login information"
+// @Success 200 {object} param.LoginResponse "Successfully logged in"
+// @Failure 400 {object} error "Bad Request"
+// @Failure 401 {object} error "Unauthorized"
+// @Router /users/login [post]
 func (h Handler) userLogin(c echo.Context) error {
 	var req param.LoginRequest
 

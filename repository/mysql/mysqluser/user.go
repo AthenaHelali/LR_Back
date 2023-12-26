@@ -113,9 +113,23 @@ func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 	}
 	for rows.Next() {
 		var laptop entity.Laptop
-		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+		var imageUrlTmp *string = new(string)
+		var redirectUrlTmp *string = new(string)
+	
+		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &imageUrlTmp, &redirectUrlTmp)
 		if err != nil {
-			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+			println(err.Error())
+			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+		}
+		if imageUrlTmp == nil {
+			laptop.ImageURL = ""
+		} else {
+			laptop.ImageURL = *imageUrlTmp
+		}
+		if redirectUrlTmp == nil {
+			laptop.RedirectURL = ""
+		} else {
+			laptop.RedirectURL = *redirectUrlTmp
 		}
 
 		laptops = append(laptops, laptop)

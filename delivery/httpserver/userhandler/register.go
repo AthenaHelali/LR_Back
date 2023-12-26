@@ -6,7 +6,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
-
+// @Summary Register a new user
+// @Description Register a new user with the provided information
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body param.RegisterRequest true "User registration information"
+// @Success 201 {object} param.RegisterResponse "Successfully registered"
+// @Failure 400 {object} error "Bad Request"
+// @Router /users/register [post]
 func (h Handler) userRegister(c echo.Context) error {
 	var uReq param.RegisterRequest
 
