@@ -17,5 +17,4 @@ EXPOSE 8080
 
 ENTRYPOINT ["/bin/lr-app"]
 
-CMD ["go", "run", "main.go"]
 
