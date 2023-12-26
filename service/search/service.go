@@ -51,15 +51,7 @@ func (s *Service) SearchRequest(inf param.SearchInfo) (param.SearchResponse, err
 		return param.SearchResponse{}, err
 	}
 	defer response.Body.Close()
-
-	//response.Body
-	//buf := new(strings.Builder)
-	//_, err = io.Copy(buf, response.Body)
-	//if err != nil {
-	//	println(err.Error())
-	//}
-	// check errors
-	//fmt.Println(buf.String())
+	
 	var searchRes param.SearchResponse
 	err = json.NewDecoder(response.Body).Decode(&searchRes)
 	if err != nil {

@@ -138,15 +138,29 @@ func (d *DB) GetLaptops(UserID uint) ([]entity.Laptop, error) {
 
 func (d *DB) GetLaptopByID(LaoptopID uint) (entity.Laptop, error) {
 	const op = "mysql.GetLaptops"
-	row := d.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where laptop.ID = ?`, LaoptopID)
+	row := d.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where id = ?`, LaoptopID)
 	if err := row.Err(); err != nil {
 		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 	}
 
 	var laptop entity.Laptop
-	err := row.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
+	var imageUrlTmp *string = new(string)
+	var redirectUrlTmp *string = new(string)
+
+	err := row.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &imageUrlTmp, &redirectUrlTmp)
 	if err != nil {
-		return entity.Laptop{}, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+		println(err.Error())
+		return laptop, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+	}
+	if imageUrlTmp == nil {
+		laptop.ImageURL = ""
+	} else {
+		laptop.ImageURL = *imageUrlTmp
+	}
+	if redirectUrlTmp == nil {
+		laptop.RedirectURL = ""
+	} else {
+		laptop.RedirectURL = *redirectUrlTmp
 	}
 
 	return laptop, nil
@@ -206,6 +220,6 @@ func (db *DB) Search(IDs []int) ([]param.LaptopInfo, error) {
 		laptops = append(laptops, info)
 
 	}
-	
+
 	return laptops, nil
 }
