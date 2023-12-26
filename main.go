@@ -53,7 +53,7 @@ func main() {
 			Username: "gameapp",
 			Password: "gameappt0lk2o20",
 			Port:     3308,
-			Host:     "localhost",
+			Host:     "64.225.67.204",
 			DBName:   "gameapp_db",
 		},
 	}
