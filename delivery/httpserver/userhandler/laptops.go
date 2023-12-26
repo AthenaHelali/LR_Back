@@ -70,10 +70,8 @@ func (h Handler) getLaptops(c echo.Context) error {
 
 func (h Handler) getLaptop(c echo.Context) error {
 	var req param.LaptopRequest
-
-	if err := c.Bind(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "cant bind request")
-	}
+	laptop_Id, _ := strconv.Atoi(c.Param("laptop_id"))
+	req.LaptopID = laptop_Id
 
 	response, err := h.userSvc.GetLaptop(req)
 
@@ -84,6 +82,7 @@ func (h Handler) getLaptop(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 
 }
+
 func (h Handler) search(c echo.Context) error {
 	var req param.SearchRequest
 

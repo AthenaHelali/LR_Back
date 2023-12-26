@@ -24,5 +24,5 @@ func (h Handler) SetUerRoutes(e *echo.Echo) {
 
 	userGroup.POST("/laptops/search",h.search,middleware.Auth(h.authSvc, h.authConfig))
 
-	userGroup.GET("/laptop",h.getLaptop)
+	userGroup.GET("/laptop/:laptop_id",h.getLaptop)
 }
