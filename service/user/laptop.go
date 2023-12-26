@@ -68,17 +68,21 @@ func (s Service) GetLaptop(req param.LaptopRequest) (param.LaptopResponse, error
 	return param.LaptopResponse{Laptop: *laptopsInfo}, nil
 }
 
-func (s Service) Search(req param.SearchRequest) (param.SearchResponse, error) {
-	// TODO - get laptops from ml component
-	var laptops []param.LaptopInfo
-	laptops,_ = s.repo.Search()
-
-	return param.SearchResponse{Laptops: laptops}, nil
-
+func (s Service) Search(req param.SearchRequest) ([]param.LaptopInfo, error) {
+	resp, err := s.search.SearchRequest(req.Info)
+	if err != nil {
+		return nil,fmt.Errorf("unexpected error: %w", err)
+	}
+	result, err := s.repo.Search(resp.Result)
+	if err != nil {
+		return nil,fmt.Errorf("unexpected error: %w", err)
+	}
+	return result, nil
 }
 
 func (s Service) RemoveFavoriteLaptop(req param.RemoveFavoriteLaptopRequest) (param.RemoveFavoriteLaptopResponse, error) {
 
+	fmt.Println(req.LaptopID, req.UserID)
 	err := s.repo.RemoveFavoriteLaptop(req.LaptopID, req.UserID)
 	if err != nil {
 		return param.RemoveFavoriteLaptopResponse{},fmt.Errorf("unexpected error: %w", err)

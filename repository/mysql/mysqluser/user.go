@@ -80,7 +80,7 @@ func scanUser(scanner mysql.Scanner) (entity.User, error) {
 
 }
 
-func (d *DB) AddFavoriteLaptop(userID int, laptopID int) (error) {
+func (d *DB) AddFavoriteLaptop(userID int, laptopID int) error {
 	const op = "mysql.AddFavoriteLaptop"
 
 	_, err := d.conn.Connection().Exec(`insert into user_laptop(user_ref, laptop_ref) values (?, ?)`, userID, laptopID)
@@ -189,26 +189,23 @@ func (db *DB) UpdateUser(updatedUser entity.User) error {
 	return err
 }
 
-func (db *DB) Search() ([]param.LaptopInfo, error) {
+func (db *DB) Search(IDs []int) ([]param.LaptopInfo, error) {
 	const op = "mysql.Search"
-	rows, err := db.conn.Connection().Query(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops`)
-	if err != nil {
-		return nil,richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
-
-	}
-	defer rows.Close()
-
 	var laptops []param.LaptopInfo
+	var info param.LaptopInfo
 
-	// Iterate over the result set and populate the users slice
-	for rows.Next() {
-		var laptop param.LaptopInfo
-		err := rows.Scan(&laptop.ID, &laptop.CPU, &laptop.RAM, &laptop.SSD, &laptop.HDD, &laptop.Graphic, &laptop.ScreenSize, &laptop.Company, &laptop.Price, &laptop.ImageURL, &laptop.RedirectURL)
-		if err != nil {
-			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
-
+	for _, id := range IDs {
+		row := db.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where id = ?`, id)
+		if err := row.Err(); err != nil {
+			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 		}
-		laptops = append(laptops, laptop)
+		err := row.Scan(&info.ID, &info.CPU, &info.RAM, &info.SSD, &info.HDD, &info.Graphic, &info.ScreenSize, &info.Company, &info.Price, &info.ImageURL, &info.RedirectURL)
+		if err != nil {
+			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+		}
+		laptops = append(laptops, info)
+
 	}
+	
 	return laptops, nil
 }
