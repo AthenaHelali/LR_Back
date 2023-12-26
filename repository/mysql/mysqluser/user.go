@@ -195,7 +195,7 @@ func (db *DB) Search(IDs []int) ([]param.LaptopInfo, error) {
 	var info param.LaptopInfo
 
 	for _, id := range IDs {
-		row := db.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where id = ?`, id)
+		row := db.conn.Connection().QueryRow(`select laptops.id, laptops.cpu, laptops.ram, laptops.ssd, laptops.hdd, laptops.graphic,laptops.screen_size, laptops.company,laptops.price, laptops.image_url, laptops.redirect_url from laptops where id = ?`, id+1)
 		if err := row.Err(); err != nil {
 			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 		}

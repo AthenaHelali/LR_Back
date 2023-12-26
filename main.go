@@ -77,7 +77,7 @@ func setupServices(cfg config.Config) (authservice.Service, user.Service, userva
 
 	userMysql := mysqluser.New(MysqlRepo)
 
-	searchSvc := search.New("https://localhost:8000/recommendation")
+	searchSvc := search.New("http://localhost:8000/recommendation")
 
 	userSvc := user.New(authSvc, userMysql, searchSvc)
 
