@@ -1,7 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "title": "Laptop Recommendersystem",
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
         "/backoffice/laptops": {
@@ -505,6 +507,9 @@
                 },
                 "phone_number": {
                     "type": "string"
+                },
+                "role": {
+                    "type": "integer"
                 }
             }
         },

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"game-app/config"
 	"game-app/delivery/httpserver"
+	_ "game-app/docs"
 	"game-app/repository/migrator"
 	"game-app/repository/mysql"
 	mysqlbackofficeuser "game-app/repository/mysql/backofficeuser"
@@ -37,6 +38,10 @@ func GetHTTPServerPort(fallback int) int {
 
 	return port
 }
+
+// @title           Laptop Recommendersystem
+// @version         1.0
+
 func main() {
 	cfg2 := config.Load()
 	fmt.Printf("cfg : %+v", cfg2)

@@ -1,5 +1,3 @@
-servers:
-  - url: 5.34.200.127:8088,
 definitions:
   param.AddLaptopRequest:
     properties:
@@ -40,6 +38,8 @@ definitions:
         type: string
       phone_number:
         type: string
+      role:
+        type: integer
     type: object
   param.RegisterResponse:
     properties:
@@ -127,6 +127,8 @@ definitions:
     type: object
 info:
   contact: {}
+  title: Laptop Recommendersystem
+  version: "1.0"
 paths:
   /backoffice/laptops:
     get:

@@ -13,8 +13,8 @@ import (
 	"html/template"
 	"io"
 	"net/http"
-
-	"github.com/labstack/echo/v4"
+	"github.com/swaggo/echo-swagger"
+     "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
@@ -34,6 +34,9 @@ func New(config config.Config, authSvc authservice.Service, userSvc user.Service
 
 func (s Server) Serve() {
 	e := echo.New()
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
 	e.Renderer = &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("templates/*.html")),
 	}

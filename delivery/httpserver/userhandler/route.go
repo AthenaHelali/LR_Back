@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h Handler) SetUerRoutes(e *echo.Echo) {
+func (h Handler) SetUerRoutes(e *echo.Echo) {	
 	userGroup := e.Group("/users")
 
 	userGroup.POST("/register", h.userRegister)
@@ -36,7 +36,7 @@ func (h Handler) SetUerRoutes(e *echo.Echo) {
 	sellerGroup.POST("/upload/", h.uploadImage)
 
 	sellerGroup.PUT("/laptops/", h.updateLaptop, middleware.Auth(h.authSvc, h.authConfig))
-	
+
 	sellerGroup.DELETE("/laptops/:laptop_id", h.removeSellerLaptop, middleware.Auth(h.authSvc, h.authConfig))
 
 }
