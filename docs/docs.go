@@ -106,6 +106,280 @@ const docTemplate = `{
                 }
             }
         },
+        "/sellerGroup/laptops/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve the list of laptops associated with the authenticated seller.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sellers"
+                ],
+                "summary": "Get laptops for a seller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/param.LaptopsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a seller to update details of a laptop in their inventory.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sellers"
+                ],
+                "summary": "Update a laptop for a seller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated laptop details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/param.UpdateLaptopRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a seller to add a new laptop to their inventory.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sellers"
+                ],
+                "summary": "Add a new laptop for a seller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Laptop details to be added",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/param.SellerLaptopRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/param.SellerLaptopRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/sellerGroup/laptops/{laptop_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a seller to remove a laptop from their inventory.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sellers"
+                ],
+                "summary": "Remove a laptop for a seller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Laptop ID",
+                        "name": "laptop_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/sellerGroup/upload/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a seller to upload an image for their inventory.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sellers"
+                ],
+                "summary": "Upload an image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image file to be uploaded",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/userGroup/laptop/{laptop_id}": {
+            "get": {
+                "description": "Retrieve information about a laptop using its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "laptops"
+                ],
+                "summary": "Get laptop details by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Laptop ID",
+                        "name": "laptop_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/users/": {
             "put": {
                 "description": "Update user information with the provided details",
@@ -475,6 +749,58 @@ const docTemplate = `{
                 }
             }
         },
+        "param.LaptopInfo": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "graphic": {
+                    "type": "integer"
+                },
+                "hdd": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "ram": {
+                    "type": "integer"
+                },
+                "redirect_url": {
+                    "type": "string"
+                },
+                "screen_size": {
+                    "type": "string"
+                },
+                "ssd": {
+                    "type": "integer"
+                }
+            }
+        },
+        "param.LaptopsResponse": {
+            "type": "object",
+            "properties": {
+                "laptops": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/param.LaptopInfo"
+                    }
+                }
+            }
+        },
         "param.LoginRequest": {
             "type": "object",
             "properties": {
@@ -600,6 +926,44 @@ const docTemplate = `{
                 }
             }
         },
+        "param.SellerLaptopRequest": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "graphic": {
+                    "type": "integer"
+                },
+                "hdd": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "ram": {
+                    "type": "integer"
+                },
+                "redirect_url": {
+                    "type": "string"
+                },
+                "screen_size": {
+                    "type": "string"
+                },
+                "ssd": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "param.Tokens": {
             "type": "object",
             "properties": {
@@ -608,6 +972,44 @@ const docTemplate = `{
                 },
                 "refresh_token": {
                     "type": "string"
+                }
+            }
+        },
+        "param.UpdateLaptopRequest": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "graphic": {
+                    "type": "integer"
+                },
+                "hdd": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "ram": {
+                    "type": "integer"
+                },
+                "redirect_url": {
+                    "type": "string"
+                },
+                "screen_size": {
+                    "type": "string"
+                },
+                "ssd": {
+                    "type": "integer"
                 }
             }
         },
@@ -662,7 +1064,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Laptop Recommendersystem",
+	Title:            "Laptop Recommender system",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

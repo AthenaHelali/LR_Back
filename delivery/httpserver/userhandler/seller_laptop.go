@@ -8,8 +8,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-
-func (h Handler)getSellerLaptops(c echo.Context) error{
+// @Summary Get laptops for a seller
+// @Description Retrieve the list of laptops associated with the authenticated seller.
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} param.LaptopsResponse "Successful response"
+// @Failure 400 {object} error "Bad Request"
+// @Router /sellerGroup/laptops/ [get]
+func (h Handler) getSellerLaptops(c echo.Context) error {
 	var req param.LaptopsRequest
 
 	cl := claim.GetClaimFromEchoContext(c)

@@ -99,6 +99,15 @@ func (h Handler) getLaptops(c echo.Context) error {
 
 }
 
+// @Summary Get laptop details by ID
+// @Description Retrieve information about a laptop using its ID.
+// @Tags laptops
+// @Accept json
+// @Produce json
+// @Param laptop_id path int true "Laptop ID" Format(int64)
+// @Success 200 {object} error "Successful response"
+// @Failure 400 {object} error "Bad Request"
+// @Router /userGroup/laptop/{laptop_id} [get]
 func (h Handler) getLaptop(c echo.Context) error {
 	var req param.LaptopRequest
 	laptop_Id, _ := strconv.Atoi(c.Param("laptop_id"))
@@ -142,7 +151,17 @@ func (h Handler) search(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 
 }
-
+// @Summary Update a laptop for a seller
+// @Description Allows a seller to update details of a laptop in their inventory.
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer token"
+// @Param request body param.UpdateLaptopRequest true "Updated laptop details"
+// @Success 200 {object} map[string]interface{} "Successful response"
+// @Failure 400 {object} error "Bad Request"
+// @Router /sellerGroup/laptops/ [put]
 func (h Handler) updateLaptop(c echo.Context) error {
 	var req param.UpdateLaptopRequest
 
@@ -158,7 +177,17 @@ func (h Handler) updateLaptop(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, res)
 }
-
+// @Summary Remove a laptop for a seller
+// @Description Allows a seller to remove a laptop from their inventory.
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer token"
+// @Param laptop_id path int true "Laptop ID" Format(int64)
+// @Success 200 {object} map[string]interface{} "Successful response"
+// @Failure 400 {object} error "Bad Request"
+// @Router /sellerGroup/laptops/{laptop_id} [delete]
 func (h Handler) removeSellerLaptop(c echo.Context) error {
 	var req param.RemoveSellerLaptopRequest
 	cl := claim.GetClaimFromEchoContext(c)

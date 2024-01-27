@@ -11,6 +11,40 @@ definitions:
       success:
         type: boolean
     type: object
+  param.LaptopInfo:
+    properties:
+      company:
+        type: string
+      cpu:
+        type: string
+      created_at:
+        type: string
+      graphic:
+        type: integer
+      hdd:
+        type: integer
+      id:
+        type: integer
+      image_url:
+        type: string
+      price:
+        type: string
+      ram:
+        type: integer
+      redirect_url:
+        type: string
+      screen_size:
+        type: string
+      ssd:
+        type: integer
+    type: object
+  param.LaptopsResponse:
+    properties:
+      laptops:
+        items:
+          $ref: '#/definitions/param.LaptopInfo'
+        type: array
+    type: object
   param.LoginRequest:
     properties:
       password:
@@ -91,12 +125,62 @@ definitions:
       success:
         type: boolean
     type: object
+  param.SellerLaptopRequest:
+    properties:
+      company:
+        type: string
+      cpu:
+        type: string
+      graphic:
+        type: integer
+      hdd:
+        type: integer
+      image_url:
+        type: string
+      price:
+        type: string
+      ram:
+        type: integer
+      redirect_url:
+        type: string
+      screen_size:
+        type: string
+      ssd:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   param.Tokens:
     properties:
       access_token:
         type: string
       refresh_token:
         type: string
+    type: object
+  param.UpdateLaptopRequest:
+    properties:
+      company:
+        type: string
+      cpu:
+        type: string
+      created_at:
+        type: string
+      graphic:
+        type: integer
+      hdd:
+        type: integer
+      id:
+        type: integer
+      price:
+        type: string
+      ram:
+        type: integer
+      redirect_url:
+        type: string
+      screen_size:
+        type: string
+      ssd:
+        type: integer
     type: object
   param.UpdateUserRequest:
     properties:
@@ -127,7 +211,7 @@ definitions:
     type: object
 info:
   contact: {}
-  title: Laptop Recommendersystem
+  title: Laptop Recommender system
   version: "1.0"
 paths:
   /backoffice/laptops:
@@ -189,6 +273,186 @@ paths:
       summary: Delete laptop
       tags:
       - backoffice
+  /sellerGroup/laptops/:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the list of laptops associated with the authenticated
+        seller.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/param.LaptopsResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Get laptops for a seller
+      tags:
+      - sellers
+    post:
+      consumes:
+      - application/json
+      description: Allows a seller to add a new laptop to their inventory.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Laptop details to be added
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/param.SellerLaptopRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/param.SellerLaptopRequest'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new laptop for a seller
+      tags:
+      - sellers
+    put:
+      consumes:
+      - application/json
+      description: Allows a seller to update details of a laptop in their inventory.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Updated laptop details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/param.UpdateLaptopRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Update a laptop for a seller
+      tags:
+      - sellers
+  /sellerGroup/laptops/{laptop_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Allows a seller to remove a laptop from their inventory.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Laptop ID
+        format: int64
+        in: path
+        name: laptop_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Remove a laptop for a seller
+      tags:
+      - sellers
+  /sellerGroup/upload/:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Allows a seller to upload an image for their inventory.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Image file to be uploaded
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Upload an image
+      tags:
+      - sellers
+  /userGroup/laptop/{laptop_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve information about a laptop using its ID.
+      parameters:
+      - description: Laptop ID
+        format: int64
+        in: path
+        name: laptop_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema: {}
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Get laptop details by ID
+      tags:
+      - laptops
   /users/:
     put:
       consumes:

@@ -24,7 +24,17 @@ func init() {
 		}
 	}
 }
-
+// @Summary Upload an image
+// @Description Allows a seller to upload an image for their inventory.
+// @Tags sellers
+// @Accept multipart/form-data
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer token"
+// @Param image formData file true "Image file to be uploaded"
+// @Success 200 {object} map[string]interface{} "Successful response"
+// @Failure 400 {string} string "Bad Request"
+// @Router /sellerGroup/upload/ [post]
 func (h Handler) uploadImage(c echo.Context) error {
 	file, err := c.FormFile("image")
 	if err != nil {
@@ -66,6 +76,17 @@ func (h Handler) uploadImage(c echo.Context) error {
 	})
 
 }
+// @Summary Add a new laptop for a seller
+// @Description Allows a seller to add a new laptop to their inventory.
+// @Tags sellers
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer token"
+// @Param request body param.SellerLaptopRequest true "Laptop details to be added"
+// @Success 200 {object} param.SellerLaptopRequest "Successful response"
+// @Failure 400 {object} error "Bad Request"
+// @Router /sellerGroup/laptops/ [post]
 func (h Handler) AddSellerLaptop(c echo.Context) error {
 	var req param.SellerLaptopRequest
 	if err := c.Bind(&req); err != nil {

@@ -39,7 +39,7 @@ func GetHTTPServerPort(fallback int) int {
 	return port
 }
 
-// @title           Laptop Recommendersystem
+// @title           Laptop Recommender system
 // @version         1.0
 
 func main() {
