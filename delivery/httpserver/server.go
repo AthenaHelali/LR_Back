@@ -10,6 +10,9 @@ import (
 	"game-app/service/backofficeuserservice"
 	"game-app/service/user"
 	"game-app/validator/uservalidator"
+	"html/template"
+	"io"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -29,8 +32,17 @@ func New(config config.Config, authSvc authservice.Service, userSvc user.Service
 	}
 }
 
-func (s Server) Serve() { 
+func (s Server) Serve() {
 	e := echo.New()
+	e.Renderer = &TemplateRenderer{
+		templates: template.Must(template.ParseGlob("templates/*.html")),
+	}
+	e.Static("/images", "public")
+	e.GET("/", func(c echo.Context) error {
+		return c.Render(http.StatusOK, "index.html", map[string]interface{}{
+			"title": "Hello, Echo!",
+		})
+	})
 
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
@@ -41,4 +53,12 @@ func (s Server) Serve() {
 	s.backofficeUserHandler.SetBackOfficeUerRoutes(e)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", s.config.HTTPServer.Port)))
+}
+
+type TemplateRenderer struct {
+	templates *template.Template
+}
+
+func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
 }

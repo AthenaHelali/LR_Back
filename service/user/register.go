@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"game-app/entity"
 	"game-app/param"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,6 +13,13 @@ func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, er
 
 	pass := []byte(req.Password)
 	hashedPass, err := bcrypt.GenerateFromPassword(pass, bcrypt.DefaultCost)
+	var role int
+
+	if req.Role == 1{
+		role = entity.UserRole
+	}else{
+		role = entity.SellerRole
+	}
 
 	//create new user in storage
 	createdUser, err := s.repo.RegisterUser(entity.User{
@@ -19,7 +27,7 @@ func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, er
 		PhoneNumber: req.PhoneNumber,
 		Name:        req.Name,
 		Password:    string(hashedPass),
-		Role:        entity.UserRole,
+		Role:        entity.Role(role),
 	})
 
 	if err != nil {

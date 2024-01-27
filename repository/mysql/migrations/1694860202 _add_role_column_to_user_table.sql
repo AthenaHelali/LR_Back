@@ -4,7 +4,7 @@
 -- TODO find a better solution instead of keeping order
 
 -- +migrate Up
-ALTER TABLE `users` ADD COLUMN `role` ENUM('user','admin') NOT NULL;
+ALTER TABLE `users` ADD COLUMN `role` ENUM('user','admin', 'seller') NOT NULL;
 
 -- +migrate Down
 ALTER TABLE `users` DROP COLUMN `role`;

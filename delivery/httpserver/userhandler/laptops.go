@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 )
+
 // @Summary Add a laptop to favorites
 // @Description Add a laptop to the user's favorites list
 // @Tags users
@@ -37,6 +38,7 @@ func (h Handler) addFavorite(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 
 }
+
 // @Summary Remove laptop from favorites
 // @Description Remove a laptop from the user's favorites list
 // @Tags users
@@ -69,6 +71,7 @@ func (h Handler) removeFavorite(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 
 }
+
 // @Summary Get user's favorite laptops
 // @Description Retrieve the list of laptops marked as favorites by the authenticated user
 // @Tags users
@@ -138,4 +141,37 @@ func (h Handler) search(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, response)
 
+}
+
+func (h Handler) updateLaptop(c echo.Context) error {
+	var req param.UpdateLaptopRequest
+
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "cant bind request")
+	}
+
+	res, err := h.userSvc.UpdateLaptop(req)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
+
+func (h Handler) removeSellerLaptop(c echo.Context) error {
+	var req param.RemoveSellerLaptopRequest
+	cl := claim.GetClaimFromEchoContext(c)
+	laptop_Id, _ := strconv.Atoi(c.Param("laptop_id"))
+	req.LaptopID = laptop_Id
+
+	req.UserID = int(cl.UserID)
+
+	resp, err := h.userSvc.RemoveSellerLaptop(req)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, resp)
 }

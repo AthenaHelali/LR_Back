@@ -5,11 +5,13 @@ type Role uint8
 const (
 	UserRole = 1 + iota
 	AdminRole
+	SellerRole
 )
 
 const (
-	UserRoleStr  = "user"
-	AdminRoleStr = "admin"
+	UserRoleStr   = "user"
+	AdminRoleStr  = "admin"
+	SellerRoleStr = "seller"
 )
 
 func (r Role) String() string {
@@ -19,6 +21,9 @@ func (r Role) String() string {
 
 	case UserRole:
 		return UserRoleStr
+
+	case SellerRole:
+		return SellerRoleStr
 	}
 	return ""
 }
