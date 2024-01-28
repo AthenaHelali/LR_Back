@@ -20,6 +20,6 @@ jobs:
       - name: Install dependencies
         run: cd backend && go get .
       - name: Build
-        run: cd backend && go build -v ./...
+        run: cd backend && go build "./..."
       - name: Test with the Go CLI
-        run: cd backend & go test "./..." 
+        run: cd backend && go test "./..." 
