@@ -207,8 +207,6 @@ func (d *DB) UpdateUser(updatedUser entity.User) error {
 	updateQuery += " WHERE id = ?"
 	updateValues = append(updateValues, updatedUser.ID)
 
-	fmt.Print(updateQuery)
-
 	// Execute the update query
 	_, err := d.conn.Connection().Exec(updateQuery, updateValues...)
 	return err

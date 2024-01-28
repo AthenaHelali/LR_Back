@@ -24,6 +24,7 @@ func init() {
 		}
 	}
 }
+
 // @Summary Upload an image
 // @Description Allows a seller to upload an image for their inventory.
 // @Tags sellers
@@ -42,7 +43,7 @@ func (h Handler) uploadImage(c echo.Context) error {
 		return c.String(http.StatusBadRequest, fmt.Sprintf("file err: %s", err.Error()))
 
 	}
-	
+
 	file, err := c.FormFile("image")
 	if err != nil {
 		fmt.Println(err)
@@ -50,7 +51,7 @@ func (h Handler) uploadImage(c echo.Context) error {
 
 	}
 
-	if file.Size > 50*1024 {
+	if file.Size > 100*1024 {
 		return c.String(http.StatusBadRequest, "file size exceeds 50KB")
 	}
 
@@ -92,6 +93,7 @@ func (h Handler) uploadImage(c echo.Context) error {
 	})
 
 }
+
 // @Summary Add a new laptop for a seller
 // @Description Allows a seller to add a new laptop to their inventory.
 // @Tags sellers

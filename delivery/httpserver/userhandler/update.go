@@ -1,12 +1,14 @@
 package userhandler
 
 import (
+	"fmt"
 	"game-app/param"
 	"game-app/pkg/claim"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
+
 // @Summary Update user information
 // @Description Update user information with the provided details
 // @Tags users
@@ -29,7 +31,7 @@ func (h Handler) updateUser(c echo.Context) error {
 	cl := claim.GetClaimFromEchoContext(c)
 	req.ID = cl.UserID
 
-
+	fmt.Println(req)
 	res, err := h.userSvc.UpdateUser(req)
 
 	if err != nil {
