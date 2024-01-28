@@ -59,7 +59,29 @@ func (m *MockRepo) Search(IDs []int) ([]param.LaptopInfo, error) {
 	return args.Get(0).([]param.LaptopInfo), args.Error(1)
 }
 
+func (m *MockRepo) AddLaptop(LaptopInfo param.LaptopInfo, UserID uint) (uint, error) {
+	args := m.Called(LaptopInfo, UserID)
+	return args.Get(0).(uint), args.Error(1)
+}
+
+func (m *MockRepo) AddSellerLaptop(LaptopID, UserID uint) error {
+	return nil
+}
+
+func (m *MockRepo) GetSellerLaptops(UserID uint) ([]entity.Laptop, error) {
+	return nil, nil
+}
+
+func (m *MockRepo) UpdateLaptop(updatedLaptop entity.Laptop) error {
+	return nil
+}
+
+func (m *MockRepo) RemoveSellerLaptop(LaptopID int, SellerID int) error {
+	return nil
+}
+
 func TestRegister(t *testing.T) {
+	var _ Repository = new(MockRepo)
 	// Create a mock repository
 	mockRepo := new(MockRepo)
 
