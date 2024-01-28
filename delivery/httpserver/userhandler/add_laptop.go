@@ -36,6 +36,13 @@ func init() {
 // @Failure 400 {string} string "Bad Request"
 // @Router /sellerGroup/upload/ [post]
 func (h Handler) uploadImage(c echo.Context) error {
+	err := c.Request().ParseMultipartForm(50 * 1024)
+	if err != nil {
+		fmt.Println(err)
+		return c.String(http.StatusBadRequest, fmt.Sprintf("file err: %s", err.Error()))
+
+	}
+	
 	file, err := c.FormFile("image")
 	if err != nil {
 		fmt.Println(err)
@@ -43,7 +50,16 @@ func (h Handler) uploadImage(c echo.Context) error {
 
 	}
 
-	fileExt := filepath.Ext(file.Filename)
+	if file.Size > 50*1024 {
+		return c.String(http.StatusBadRequest, "file size exceeds 50KB")
+	}
+
+	fileExt := strings.ToLower(filepath.Ext(file.Filename))
+	if fileExt != ".jpg" && fileExt != ".png" {
+		return c.String(http.StatusBadRequest, "only JPG and PNG files are allowed")
+	}
+
+	fileExt = filepath.Ext(file.Filename)
 	originalFileName := strings.TrimSuffix(filepath.Base(file.Filename), filepath.Ext(file.Filename))
 	now := time.Now()
 	filename := strings.ReplaceAll(strings.ToLower(originalFileName), " ", "-") + "-" + fmt.Sprintf("%v", now.Unix()) + fileExt
