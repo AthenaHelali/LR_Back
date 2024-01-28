@@ -3,6 +3,7 @@ package backofficeuserhandler
 import (
 	"game-app/delivery/httpserver/middleware"
 	"game-app/entity"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,7 +14,9 @@ func (h Handler) SetBackOfficeUerRoutes(e *echo.Echo) {
 
 	userGroup.GET("/users/", h.listUsers, middleware.Auth(h.authSvc, h.authConfig),
 		middleware.AccessCheck(h.authorizationSvc, entity.UserListPermission))
-		
+
+	userGroup.DELETE("/users/:user_id", h.deleteuser, middleware.Auth(h.authSvc, h.authConfig),
+		middleware.AccessCheck(h.authorizationSvc, entity.UserListPermission))
 	userGroup.GET("/laptops/", h.listLaptops, middleware.Auth(h.authSvc, h.authConfig),
 		middleware.AccessCheck(h.authorizationSvc, entity.LaptopListPermission))
 

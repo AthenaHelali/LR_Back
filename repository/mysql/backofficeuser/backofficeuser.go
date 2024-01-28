@@ -11,7 +11,7 @@ import (
 
 func (d *DB) ListAllUsers() ([]entity.User, error) {
 	const op = "mysql.ListAllUsers"
-	rows, err := d.conn.Connection().Query("SELECT id,name, phone_number, created_at, password FROM users")
+	rows, err := d.conn.Connection().Query("SELECT id,name, phone_number, created_at, password, role FROM users")
 	if err != nil {
 		return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 
@@ -24,10 +24,19 @@ func (d *DB) ListAllUsers() ([]entity.User, error) {
 	// Iterate over the result set and populate the users slice
 	for rows.Next() {
 		var user entity.User
-		err := rows.Scan(&user.ID, &user.Name, &user.PhoneNumber, &user.CreatedAt, &user.Password)
+		var role string
+		err := rows.Scan(&user.ID, &user.Name, &user.PhoneNumber, &user.CreatedAt, &user.Password, &role)
 		if err != nil {
 			return nil, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 
+		}
+
+		if role == "user" {
+			user.Role = 1
+		} else if role == "admin" {
+			user.Role = 2
+		} else if role == "seller" {
+			user.Role = 3
 		}
 		users = append(users, user)
 	}
@@ -184,5 +193,23 @@ func (d *DB) RegisterAdmin() error {
 	if err != nil {
 		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
 	}
+
+	return nil
+}
+
+func (d *DB) DeleteUser(UserID int) error {
+	const op = "DeleteUser"
+	// Execute the delete query
+
+	_, err := d.conn.Connection().Query(`DELETE FROM user_laptop WHERE user_ref = ?`, UserID)
+	if err != nil {
+		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+	}
+
+	_, err = d.conn.Connection().Query(`DELETE FROM users WHERE id = ?`, UserID)
+	if err != nil {
+		return richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgNotFound).WithKind(richerror.KindNotFound)
+	}
+
 	return nil
 }

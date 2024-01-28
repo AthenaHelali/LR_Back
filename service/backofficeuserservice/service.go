@@ -9,6 +9,7 @@ type repository interface {
 	ListAllLaptops() ([]entity.Laptop, error)
 	DeleteLaptop(LaptopID uint64)(error)	
 	RegisterAdmin()error
+	DeleteUser(UserID int)error
 }
 
 type Service struct {

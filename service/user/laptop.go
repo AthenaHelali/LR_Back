@@ -63,6 +63,7 @@ func (s Service) GetLaptop(req param.LaptopRequest) (param.LaptopResponse, error
 		Company:     laptop.Company,
 		Graphic:     laptop.Graphic,
 		CreatedAt:   laptop.CreatedAt,
+		Price:       laptop.Price,
 		ImageURL:    laptop.ImageURL,
 		RedirectURL: laptop.RedirectURL,
 	}
@@ -91,8 +92,9 @@ func (s Service) RemoveFavoriteLaptop(req param.RemoveFavoriteLaptopRequest) (pa
 	return param.RemoveFavoriteLaptopResponse{Success: true}, nil
 }
 
-func (s Service) AddLaptop(req param.SellerLaptopRequest) (param.SellerLaptopResponse, error){
+func (s Service) AddLaptop(req param.SellerLaptopRequest) (param.SellerLaptopResponse, error) {
 	laptopInfo := &param.LaptopInfo{
+		ID:         req.UserID,
 		CPU:        req.CPU,
 		RAM:        req.RAM,
 		SSD:        req.SSD,

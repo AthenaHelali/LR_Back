@@ -1,7 +1,7 @@
 package param
 
 type DeleteUserRequest struct{
-	UserID string  `json:"id"`
+	UserID int  `json:"id"`
 }
 
 type DeleteUserResponse struct{

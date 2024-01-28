@@ -238,7 +238,12 @@ func (d *DB) Search(IDs []int) ([]param.LaptopInfo, error) {
 func (d *DB) AddLaptop(LaptopInfo param.LaptopInfo, UserID uint) (uint, error) {
 	const op = "mysql.AddLaptop"
 
-	res, err := d.conn.Connection().Exec(`insert into laptops(cpu, ram, ssd, hdd, graphic, screen_size, company, price, created_at, image_url) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, LaptopInfo.CPU, LaptopInfo.RAM, LaptopInfo.SSD, LaptopInfo.HDD, LaptopInfo.Graphic, LaptopInfo.ScreenSize, LaptopInfo.Company, LaptopInfo.Price, LaptopInfo.CreatedAt, LaptopInfo.ImageURL)
+	user, err := d.GetUserByID(LaptopInfo.ID)
+	if err != nil {
+		return 0, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
+
+	}
+	res, err := d.conn.Connection().Exec(`insert into laptops(cpu, ram, ssd, hdd, graphic, screen_size, company, price, created_at, image_url, redirect_url) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, LaptopInfo.CPU, LaptopInfo.RAM, LaptopInfo.SSD, LaptopInfo.HDD, LaptopInfo.Graphic, LaptopInfo.ScreenSize, LaptopInfo.Company, LaptopInfo.Price, LaptopInfo.CreatedAt, LaptopInfo.ImageURL, user.PhoneNumber)
 	if err != nil {
 		return 0, richerror.New(op).WithError(err).WithMessage(errormessage.ErrorMsgCantScanQueryResult).WithKind(richerror.KindUnexpected)
 	}
@@ -366,7 +371,7 @@ func (d *DB) UpdateLaptop(updatedLaptop entity.Laptop) error {
 	return err
 }
 
-func (d *DB)RemoveSellerLaptop(LaptopID int, SellerID int) error{
+func (d *DB) RemoveSellerLaptop(LaptopID int, SellerID int) error {
 	const op = "mysql.DeleteLaptop"
 	deleteQuery := "DELETE FROM seller_laptop WHERE laptop_ref = ? and seller_ref = ? "
 	_, err := d.conn.Connection().Exec(deleteQuery, LaptopID, SellerID)
