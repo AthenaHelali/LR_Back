@@ -81,7 +81,7 @@ func (m *MockRepo) RemoveSellerLaptop(LaptopID int, SellerID int) error {
 }
 
 func TestRegister(t *testing.T) {
-	var _ Repository = new(MockRepo)
+
 	// Create a mock repository
 	mockRepo := new(MockRepo)
 
