@@ -6,6 +6,7 @@ import "time"
 type AccessControl struct {
 	ID           uint
 	ActorID      uint
+	
 	ActorType    ActorType
 	PermissionID uint
 	CreatedAt    time.Time
